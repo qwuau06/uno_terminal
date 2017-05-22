@@ -17,7 +17,7 @@ class Server
 		@player = 0
 		@clients = Array.new
 		@thpool = Array.new
-		@client_que = Array.new(4) 
+		@client_que = Array.new
 		puts "Successfully established. "
 
 		wait_th = Thread.new {
@@ -25,16 +25,18 @@ class Server
 				th = Thread.fork(@server.accept) do |client|
 					@mutex.synchronize do
 						@clients.size.times do |n|
-							com @clients[n],"msg","player #{client} joined game."
+							com n,"msg","player #{client} joined game."
 						end
 					end
 					puts "player #{client} joined game."
-					com client,"handshake","#{order}"
-					com client,"msg","Connection Established, waiting for others."
 					@mutex.synchronize do
 						@clients.push(client)
 						@client_que.push(Queue.new)
+						@client_que[-1].push 0
+						@client_que[-1].pop
 					end
+					com order,"handshake","#{order}"
+					com order,"msg","Connection Established, waiting for others."
 
 					while str = @clients[order].gets.chomp do
 						@client_que[order].push str
@@ -53,6 +55,7 @@ class Server
 					Thread.kill(@thpool[n])
 				end
 				Thread.kill(wait_th)
+				wait_th.join
 			elsif @clients.size==pc then
 				puts "Game Begin"
 			else
@@ -62,6 +65,7 @@ class Server
 				break
 			end
 		end
+		puts "Current player: #{@clients.size}, Queue size #{@client_que.size},maximum player #{pc}"
 
 		broadcast "start",@clients.size.to_s
 
@@ -75,11 +79,10 @@ class Server
 	end
 
 	def get_resp(n)
+		while @client_que[n].empty? do
+			next
+		end
 		return @client_que[n].pop
-	end
-
-	def wait_for_client(clt)
-		return @clients[clt].gets.chomp
 	end
 
 	def com(clt,type,msg="")
@@ -131,10 +134,10 @@ class Client
 				when "msg"
 					display @server.gets.chomp
 				when "draw"
-					@mutex.synchronize do
+				#	@mutex.synchronize do
 						@recv_que << 1
 						@recv_que << Card.new(@server.gets.chomp) # get new card
-					end
+				#	end
 				when "turn" 
 					turn_info = @server.gets.chomp.split(',')
 					@all_hands.size.times do |n|
@@ -142,19 +145,19 @@ class Client
 					end
 					@dir = turn_info.shift.to_i
 					@cur = turn_info.shift.to_i
-					@mutex.synchronize do
+				#	@mutex.synchronize do
 						@recv_que << 2
 						@recv_que << Card.new(turn_info.shift) # last card
-					end
+				#	end
 				when "win"
-					@mutex.synchronize do
+				#	@mutex.synchronize do
 						@recv_que << 3
-					end
+				#	end
 				when "handshake"
-					@mutex.synchronize do
+				#	@mutex.synchronize do
 						@recv_que << 4
 						@recv_que <<  @server.gets.chomp.to_i 
-					end
+				#	end
 				when "start"
 					@all_hands = Array.new 5,@server.gets.chomp.to_i # num of players
 					setup_display
@@ -192,15 +195,15 @@ class Client
 			case sig
 			when 1
 				card = nil
-				@mutex.synchronize do
+			#	@mutex.synchronize do
 					card = @recv_que.pop
-				end
+			#	end
 				@hand.add(card)
 				display "You draw #{card.to_s}"
 			when 2
-				@mutex.synchronize do
+			#	@mutex.synchronize do
 					@last = @recv_que.pop
-				end
+			#	end
 				display "Last played was #{@last.to_s}"
 
 				if @cur==@order then
@@ -262,7 +265,7 @@ class UnoGame_Server
 	def initialize players=4
 		@deck = Deck.new
 		@players = players
-		@cur = 0
+		@cur = -1
 		@dir = 1
 		@last = Card.new("4F")
 		@hand = Array.new
@@ -277,25 +280,26 @@ class UnoGame_Server
 		#initialize
 		game_in_play = true
 
-		4.times do |player|
+		@players.times do |player|
 			5.times do draw(player) end
 		end
 
 		#turn and check
 		
 		loop do
-			ct = @players
-			ct.times do |player|
-				next if @winners.include?player
-				wait_for_play(player)
-				if @hand[player].empty? then
-					win(player)
+		#	ct = @players
+		#	ct.times do |player|
+				next_one
+				next if @winners.include?@cur
+				wait_for_play
+				if @hand[@cur].empty? then
+					win
 					if @winners.size == @Players.size then
 						game_in_play = false
 						break
 					end
 				end
-			end
+		#	end
 			break if game_in_play == false
 		end
 	end
@@ -303,7 +307,7 @@ class UnoGame_Server
 	def infos
 		str = ""
 		@players.times do |n|
-			str += @hand[n].num+","
+			str += @hand[n].num.to_s+","
 		end
 		str += @dir.to_s + ","
 		str += @cur.to_s + ","
@@ -311,8 +315,8 @@ class UnoGame_Server
 		return str
 	end
 
-	def next
-		pf = @last[1].to_i(16)
+	def next_one
+		pf = @last.num
 		inc = 1
 		if pf==10 then
 			@dir = -@dir
@@ -322,14 +326,15 @@ class UnoGame_Server
 		if @dir == 1 then
 			@cur+=inc
 			while @winners.include?(@cur) do
-				@cur = (@cur+1)%4
+				@cur = (@cur+1) % @players
 			end
 		else
 			@cur-=inc
 			while @winners.include?(@cur) do
-				@cur = (@cur-1)%4
+				@cur = (@cur-1) % @players
 			end
 		end
+		puts "next is #{@cur}"
 		@server.broadcast "turn",infos
 	end
 

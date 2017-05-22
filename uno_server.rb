@@ -1,4 +1,5 @@
 require "./uno.rb"
 require "./unonet.rb"
 
-UnoGame_Server.new(2)
+server = UnoGame_Server.new(2)
+server.game
