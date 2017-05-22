@@ -112,7 +112,7 @@ class Client
 
 	def game(ip, port=8915)
 		#thread communication
-		recv_que= Queue.new
+		@recv_que= Queue.new
 
 		@server = begin
 				  Timeout::timeout(2){TCPSocket.open(ip,port)}
@@ -130,22 +130,22 @@ class Client
 				when "msg"
 					display @server.gets.chomp
 				when "draw"
-					recv_que << 1
-					recv_que << Card.new(@server.gets.chomp) # get new card
+					@recv_que << 1
+					@recv_que << Card.new(@server.gets.chomp) # get new card
 				when "turn" 
-					recv_que << 2
+					@recv_que << 2
 					turn_info = @server.gets.chomp.split(',')
 					@all_hands.size.times do |n|
 						@all_hands[n] = turn_info.shift.to_i
 					end
 					@dir = turn_info.shift.to_i
 					@cur = turn_info.shift.to_i
-					recv_que << Card.new(turn_info.shift) # last card
+					@recv_que << Card.new(turn_info.shift) # last card
 				when "win"
-					recv_que << 3
+					@recv_que << 3
 				when "handshake"
-					recv_que << 4
-					recv_que <<  @server.gets.chomp.to_i 
+					@recv_que << 4
+					@recv_que <<  @server.gets.chomp.to_i 
 				when "start"
 					@all_hands = Array.new 5,@server.gets.chomp.to_i # num of players
 					setup_display
@@ -178,13 +178,13 @@ class Client
 
 	def mainloop
 		loop do
-			sig = recv_que.pop if ~recv_que.empty?
-			sig = -1 if ~recv_que.empty?
+			sig = @recv_que.pop if !@recv_que.empty?
+			sig = -1 if !@recv_que.empty?
 			case sig
 			when 1
-				@hand.add(recv_que.pop)
+				@hand.add(@recv_que.pop)
 			when 2
-				@last = recv_que.pop
+				@last = @recv_que.pop
 				if @cur==@order then
 					display_msg "Your turn."
 					@hand.mark_playable
