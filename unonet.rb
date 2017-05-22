@@ -87,7 +87,7 @@ class Server
 	end
 
 	def broadcast(type,str)
-		@client.size.times do |clt|
+		@clients.size.times do |clt|
 			com clt,type,str
 		end
 	end
