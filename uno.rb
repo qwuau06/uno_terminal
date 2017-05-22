@@ -65,6 +65,11 @@ class Deck
 	def discard(cd)
 		@garbage.push(cd)
 	end
+
+	def empty?
+		return true if @deck.size == 0
+		return false 
+	end
 end
 
 class Hand
