@@ -32,6 +32,7 @@ class Server
 					com client,"msg","Connection Established, waiting for others."
 					@mutex.synchronize do
 						@clients.push(client)
+						@client_que.push(Queue.new)
 					end
 
 					while str = @clients[order].gets.chomp do
@@ -44,22 +45,21 @@ class Server
 		puts "Waiting for clients..."
 
 		#control player numbers
+
 		while str = gets.chomp do
 			if (@clients.size < pc) && (@clients.size > 1) && (str.eql?"bg") then
-				(@thpool.size...pc).each do |n|
+				(@clients.size...pc).each do |n|
 					Thread.kill(@thpool[n])
 				end
 				Thread.kill(wait_th)
+			elsif @clients.size==pc then
+				puts "game start"
 			else
 				puts "input bg to interrupt"
 			end
 			if @clients.size==pc then
 				break
 			end
-		end
-
-		@clients.size.times do 
-			@client_que.push(Queue.new)
 		end
 
 		broadcast "start",@clients.size.to_s

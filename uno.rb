@@ -82,7 +82,7 @@ class Hand
 
 	def initialize 
 		@hand = Array.new
-		@df = Array.new
+		@df = Array.new [0,0,0,0,0,0]
 	end
 
 	def add(cd)
