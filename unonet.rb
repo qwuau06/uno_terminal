@@ -83,11 +83,11 @@ class Server
 
 	def com(clt,type,msg="")
 		clt.puts type
-		clt.puts msg
+		clt.puts msg.to_s
 	end
 
 	def broadcast(type,str)
-		@clients.size.times do |clt|
+		@clients.each do |clt|
 			com clt,type,str
 		end
 	end
