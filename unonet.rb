@@ -28,6 +28,7 @@ class Server
 							com @clients[n],"msg","player #{client} joined game."
 						end
 					end
+					puts "player #{client} joined game."
 					com client,"handshake","#{order}"
 					com client,"msg","Connection Established, waiting for others."
 					@mutex.synchronize do
@@ -47,15 +48,15 @@ class Server
 		#control player numbers
 
 		while str = gets.chomp do
-			if (@clients.size < pc) && (@clients.size > 1) && (str.eql?"bg") then
+			if (@clients.size < pc) && (@clients.size > 1) && (str.eql?"start") then
 				(@clients.size...pc).each do |n|
 					Thread.kill(@thpool[n])
 				end
 				Thread.kill(wait_th)
 			elsif @clients.size==pc then
-				puts "game start"
+				puts "Game Begin"
 			else
-				puts "input bg to interrupt"
+				puts "Input 'start' to start"
 			end
 			if @clients.size==pc then
 				break
@@ -190,13 +191,18 @@ class Client
 			sig = -1 if !@recv_que.empty?
 			case sig
 			when 1
+				card = nil
 				@mutex.synchronize do
-					@hand.add(@recv_que.pop)
+					card = @recv_que.pop
 				end
+				@hand.add(card)
+				display "You draw #{card.to_s}"
 			when 2
 				@mutex.synchronize do
 					@last = @recv_que.pop
 				end
+				display "Last played was #{@last.to_s}"
+
 				if @cur==@order then
 					display_msg "Your turn."
 					@hand.mark_playable
@@ -206,6 +212,7 @@ class Client
 				win
 			when 4
 				@order = @server.gets.chomp.to_i
+				display_msg "Your order is #{@order}"
 			end
 		end
 	end
