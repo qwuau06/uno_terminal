@@ -48,6 +48,7 @@ class Deck
 			@deck.push(Card.new(Card.strnize(14,4)))
 		end
 		@deck.shuffle
+		@deck.shuffle
 
 		@garbage = Array.new
 	end

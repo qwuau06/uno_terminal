@@ -225,7 +225,7 @@ class Client
 	def ask_for_play
 		#dummy
 		str = gets.chomp
-		return nil if str.eql?""
+		return nil if str.eql?"p"
 		return Card.new(str)
 	end
 
