@@ -211,7 +211,6 @@ class Client
 				if @cur==@order then
 					display_msg "Your turn."
 					draw_session = true
-					@hand.mark_playable(@last)
 				else
 					draw_session = false
 				end
@@ -222,6 +221,7 @@ class Client
 				display_msg "Your order is #{@order}"
 			end
 			if draw_session == true then
+				@hand.mark_playable(@last)
 				play(ask_for_play)
 			end
 		end
@@ -238,10 +238,10 @@ class Client
 		@server.puts "p" if cd==nil
 		@server.puts cd.to_s unless cd==nil
 		ret = @hand.play(cd) unless cd==nil
-		while !ret do
+		while ret == false do
 			puts "You cannot play this card, choose again."
-			ret - @hand.play(cd)
-		end
+			ret = @hand.play(cd)
+		end unless cd==nil
 	end
 end
 
