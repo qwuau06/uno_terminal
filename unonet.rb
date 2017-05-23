@@ -280,6 +280,8 @@ class UnoGame_Server
 		#initialize
 		game_in_play = true
 
+		puts "Draw 5 cards."
+
 		@players.times do |player|
 			5.times do draw(player) end
 		end
@@ -344,7 +346,7 @@ class UnoGame_Server
 		end
 		card = @deck.draw
 		@hand[player].add(card)
-		@server.com @cur,"draw",card.to_s
+		@server.com player,"draw",card.to_s
 	end
 
 	def play(player=@cur,card)
