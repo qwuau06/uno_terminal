@@ -130,6 +130,7 @@ class Client
 		@recv_thread = Thread.new {
 			loop do
 				sig = @server.gets.chomp
+				#puts "#{sig}"
 				case sig
 				when "msg"
 					display @server.gets.chomp
@@ -140,6 +141,7 @@ class Client
 				#	end
 				when "turn" 
 					turn_info = @server.gets.chomp.split(',')
+					puts "turn info :#{turn_info}"
 					@all_hands.size.times do |n|
 						@all_hands[n] = turn_info.shift.to_i
 					end
@@ -190,8 +192,9 @@ class Client
 
 	def mainloop
 		loop do
+			sig = -1
 			sig = @recv_que.pop if !@recv_que.empty?
-			sig = -1 if !@recv_que.empty?
+			#puts "main sig #{sig}"
 			case sig
 			when 1
 				card = nil
@@ -214,7 +217,7 @@ class Client
 			when 3
 				win
 			when 4
-				@order = @server.gets.chomp.to_i
+				@order = @recv_que.pop
 				display_msg "Your order is #{@order}"
 			end
 		end
@@ -337,7 +340,7 @@ class UnoGame_Server
 			end
 		end
 		puts "next is #{@cur}"
-		@server.broadcast "turn",infos
+		@server.broadcast "turn",infos()
 	end
 
 	def draw(player=@cur)
