@@ -160,7 +160,7 @@ class Client
 						@recv_que <<  @server.gets.chomp.to_i 
 				#	end
 				when "start"
-					@all_hands = Array.new 5,@server.gets.chomp.to_i # num of players
+					@all_hands = Array.new @server.gets.chomp.to_i # num of players
 					setup_display
 				else
 				end
