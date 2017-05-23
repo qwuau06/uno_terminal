@@ -210,7 +210,7 @@ class Client
 
 				if @cur==@order then
 					display_msg "Your turn."
-					@hand.mark_playable
+					@hand.mark_playable(@last)
 					play(ask_for_play)
 				end
 			when 3
@@ -232,7 +232,7 @@ class Client
 	def play(cd)
 		@server.puts "p" if cd==nil
 		@server.puts cd.to_s unless cd==nil
-		@hand.remove(cd) unless cd==nil
+		@hand.play(cd) unless cd==nil
 	end
 end
 
@@ -350,13 +350,13 @@ class UnoGame_Server
 
 	def play(player=@cur,card)
 		@last = card
-		@hand[player].remove(card)
+		@hand[player].play(card)
 		@deck.discard(card)
 		return @hand[player].size
 	end
 
 	def wait_for_play
-		@server.get_resp @cur
+		ret = @server.get_resp @cur
 		while ret.eql?"p" do
 			draw
 		end
