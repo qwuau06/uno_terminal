@@ -109,11 +109,13 @@ class Hand
 	end
 
 	def play(cd)
+		return false if !@playable.include?cd
 		@hand-=[cd]
 		@playable-=[cd]
 		(cd.clr+1..5).each do |pt|
 			@df[pt]-=1
 		end
+		return true
 	end
 
 	def has_playable?(cd)

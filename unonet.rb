@@ -130,7 +130,7 @@ class Client
 		@recv_thread = Thread.new {
 			loop do
 				sig = @server.gets.chomp
-				puts "#{sig}"
+				#puts "#{sig}"
 				case sig
 				when "msg"
 					display @server.gets.chomp
@@ -232,7 +232,11 @@ class Client
 	def play(cd)
 		@server.puts "p" if cd==nil
 		@server.puts cd.to_s unless cd==nil
-		@hand.play(cd) unless cd==nil
+		ret = @hand.play(cd) unless cd==nil
+		while !ret do
+			puts "You cannot play this card, choose again."
+			ret - @hand.play(cd)
+		end
 	end
 end
 
@@ -350,7 +354,11 @@ class UnoGame_Server
 
 	def play(player=@cur,card)
 		@last = card
-		@hand[player].play(card)
+		ret = @hand[player].play(card)
+		while !ret do
+			@server.com player,"msg","you cannot play this card, choose again"
+			ret = @hand[player].play(card)
+		end
 		@deck.discard(card)
 		return @hand[player].size
 	end
