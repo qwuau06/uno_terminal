@@ -48,15 +48,14 @@ class Deck
 			@deck.push(Card.new(Card.strnize(13,4)))
 			@deck.push(Card.new(Card.strnize(14,4)))
 		end
-		@deck.shuffle
-		@deck.shuffle
+		@deck.shuffle!
 
 		@garbage = Array.new
 	end
 
 	def reshuffle
 		@deck.concat @garbage
-		@deck.shuffle
+		@deck.shuffle!
 		@garbage = Array.new
 	end
 
@@ -66,6 +65,14 @@ class Deck
 
 	def discard(cd)
 		@garbage.push(cd)
+	end
+
+	def to_s
+		str = ""
+		@deck.each do |card|
+			str+= card.to_s + ","
+		end
+		return str[0..-2]
 	end
 
 	def empty?
@@ -85,6 +92,14 @@ class Hand
 	def initialize 
 		@hand = Array.new
 		@df = Array.new [0,0,0,0,0,0]
+	end
+
+	def to_s
+		str = ""
+		@hand.each do |card|
+			str += card.to_s + ","
+		end
+		return str[0..-2]
 	end
 
 	def add(cd)

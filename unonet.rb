@@ -111,7 +111,7 @@ class Client
 		@mutex = Mutex.new
 		@dir = 1
 		@cur = -1
-		@last = "4F"
+		@last = "5F"
 	end
 
 	def game(ip, port=8915)
@@ -222,7 +222,11 @@ class Client
 			end
 			if draw_session == true then
 				@hand.mark_playable(@last)
-				play(ask_for_play)
+				ret = play(ask_for_play)
+				while !ret do
+					puts "You cannot play this card, choose again."
+					ret = play(ask_for_play)
+				end
 			end
 		end
 	end
@@ -237,11 +241,9 @@ class Client
 	def play(cd)
 		@server.puts "p" if cd==nil
 		@server.puts cd.to_s unless cd==nil
+		return true if cd==nil
 		ret = @hand.play(cd) unless cd==nil
-		while ret == false do
-			puts "You cannot play this card, choose again."
-			ret = @hand.play(cd)
-		end unless cd==nil
+		return ret unless cd==nil
 	end
 end
 
@@ -275,10 +277,11 @@ end
 class UnoGame_Server
 	def initialize players=4
 		@deck = Deck.new
+		puts "deck is #{@deck.to_s}"
 		@players = players
 		@cur = -1
 		@dir = 1
-		@last = Card.new("4F")
+		@last = Card.new("5F")
 		@hand = Array.new
 		@server = Server.new(players)
 		@players.times do 
