@@ -191,6 +191,7 @@ class Client
 
 	def mainloop
 		loop do
+			draw_session = false
 			sig = -1
 			sig = @recv_que.pop if !@recv_que.empty?
 			#puts "main sig #{sig}"
@@ -207,17 +208,21 @@ class Client
 					@last = @recv_que.pop
 			#	end
 				display "Last played was #{@last.to_s}"
-
 				if @cur==@order then
 					display_msg "Your turn."
+					draw_session = true
 					@hand.mark_playable(@last)
-					play(ask_for_play)
+				else
+					draw_session = false
 				end
 			when 3
 				win
 			when 4
 				@order = @recv_que.pop
 				display_msg "Your order is #{@order}"
+			end
+			if draw_session == true then
+				play(ask_for_play)
 			end
 		end
 	end
