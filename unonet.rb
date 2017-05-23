@@ -130,7 +130,7 @@ class Client
 		@recv_thread = Thread.new {
 			loop do
 				sig = @server.gets.chomp
-				#puts "#{sig}"
+				puts "#{sig}"
 				case sig
 				when "msg"
 					display @server.gets.chomp
@@ -141,7 +141,6 @@ class Client
 				#	end
 				when "turn" 
 					turn_info = @server.gets.chomp.split(',')
-					puts "turn info :#{turn_info}"
 					@all_hands.size.times do |n|
 						@all_hands[n] = turn_info.shift.to_i
 					end
@@ -292,19 +291,16 @@ class UnoGame_Server
 		#turn and check
 		
 		loop do
-		#	ct = @players
-		#	ct.times do |player|
-				next_one
-				next if @winners.include?@cur
-				wait_for_play
-				if @hand[@cur].empty? then
-					win
-					if @winners.size == @Players.size then
-						game_in_play = false
-						break
-					end
+			next_one
+			next if @winners.include?@cur
+			wait_for_play
+			if @hand[@cur].empty? then
+				win
+				if @winners.size == @Players.size then
+					game_in_play = false
+					break
 				end
-		#	end
+			end
 			break if game_in_play == false
 		end
 	end
