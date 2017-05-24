@@ -200,16 +200,18 @@ class UnoGame_Server
 
 	def wait_for_play
 		valid = false
-		ret = nil
+		ret = "p"
+		card = nil
 		while valid == false do
 			ret = @server.get_resp @cur
 			while ret.eql?"p" do
 				draw
 				ret = @server.get_resp @cur
 			end
-			valid = check_card(ret)
+			card = Card.new(ret)
+			valid = check_card(card)
 		end
-		play(ret)
+		play(card)
 	end
 
 	def win(player=@cur)
