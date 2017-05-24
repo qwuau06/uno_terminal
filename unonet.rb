@@ -378,6 +378,7 @@ class UnoGame_Server
 		ret = @server.get_resp @cur
 		while ret.eql?"p" do
 			draw
+			ret = @server.get_resp @cur
 		end
 		@cur = play(ret)
 	end

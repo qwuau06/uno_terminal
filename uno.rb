@@ -20,7 +20,7 @@ class Card
 	end
 
 	def playable? cd
-		return true if @num==15 && @color == 5
+		return true if cd.num==15 && cd.clr == 5
 		return true if @num==14
 		return true if @num==13 && cd.num<14
 		return true if cd.clr==@color && cd.clr< 4
