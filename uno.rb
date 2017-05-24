@@ -109,6 +109,13 @@ class Hand
 		return str[0..-2]
 	end
 
+	def has?(cd)
+		@hand.each do |cur|
+			if cur==cd then return true end
+		end
+		return false
+	end
+
 	def to_s
 		return any_to_s(@hand)
 	end

@@ -104,7 +104,6 @@ class UnoGame_Server
 	def initialize players=4
 		@deck = Deck.new
 		puts "deck is #{@deck.to_s}"
-		@players = players
 		@cur = -1
 		@dir = 1
 		@last = Card.new("5F")
@@ -190,6 +189,10 @@ class UnoGame_Server
 	end
 
 	def check_card(player=@cur,card)
+		if @hand[player].has?card == false then 
+			@server.com player,"check","0"
+			return false
+		end
 		if card.playable?@last then
 			@server.com player,"check","1"
 			return true
