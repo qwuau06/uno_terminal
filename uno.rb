@@ -94,12 +94,20 @@ class Hand
 		@df = Array.new [0,0,0,0,0,0]
 	end
 
-	def to_s
+	def any_to_s(tar)
 		str = ""
-		@hand.each do |card|
+		tar.each do |card|
 			str += card.to_s + ","
 		end
 		return str[0..-2]
+	end
+
+	def to_s
+		return any_to_s(@hand)
+	end
+
+	def show_playable
+		return any_to_s(@playable)
 	end
 
 	def add(cd)

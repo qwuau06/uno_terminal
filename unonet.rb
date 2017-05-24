@@ -222,6 +222,7 @@ class Client
 			end
 			if draw_session == true then
 				@hand.mark_playable(@last)
+				puts "Your playable cards are: #{@hand.show_playable}"
 				ret = play(ask_for_play)
 				while !ret do
 					puts "You cannot play this card, choose again."
@@ -239,11 +240,13 @@ class Client
 	end
 
 	def play(cd)
-		@server.puts "p" if cd==nil
-		@server.puts cd.to_s unless cd==nil
-		return true if cd==nil
-		ret = @hand.play(cd) unless cd==nil
-		return ret unless cd==nil
+		if cd==nil then
+			@server.puts "p"
+			return true
+		else
+			@server.puts cd.to_s
+			return @hand.play(cd)
+		end
 	end
 end
 
