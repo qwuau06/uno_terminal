@@ -12,6 +12,7 @@ class Card
 	end
 
 	def ==(cd)
+		return false if !cd.instance_of? Card
 		return true if @color==cd.clr && @num==cd.num
 		return false
 	end
@@ -96,6 +97,7 @@ class Hand
 
 	def initialize 
 		@hand = Array.new
+		@playable = Array.new
 		@df = Array.new [0,0,0,0,0,0]
 	end
 
@@ -138,10 +140,17 @@ class Hand
 	end
 
 	def play(cd)
-		return false if !@playable.include?cd
-		@hand-=[cd]
-		@playable-=[cd]
-		(cd.clr+1..5).each do |pt|
+		flag = false
+		@playable.each do |card|
+			if card==cd then
+				flag = true
+				break
+			end
+		end
+		return false if flag == false
+		@hand-=[card]
+		@playable-=[card]
+		(card.clr+1..5).each do |pt|
 			@df[pt]-=1
 		end
 		return true
