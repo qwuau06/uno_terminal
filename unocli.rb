@@ -83,12 +83,16 @@ class Client
 
 	def display msg
 		#dummy
-		puts msg
+		@mutex.synchronize do
+			puts msg
+		end
 	end
 
 	def display_msg msg
 		#dummy
-		puts msg
+		@mutex.synchronize do
+			puts msg
+		end
 	end
 
 	def setup_display
@@ -132,10 +136,10 @@ class Client
 			end
 			if draw_session == true then
 				@hand.mark_playable(@last)
-				puts "Your playable cards are: #{@hand.show_playable}"
+				display_msg "Your playable cards are: #{@hand.show_playable}"
 				ret = play(ask_for_play)
 				while !ret do
-					puts "You cannot play this card, choose again."
+					display_msg "You cannot play this card, choose again."
 					ret = play(ask_for_play)
 				end
 			end
