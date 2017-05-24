@@ -156,6 +156,7 @@ class Client
 	def play(cd)
 		if cd==nil then
 			@server.puts "p"
+			display_msg "pass, draw new card"
 			return true
 		else
 			@server.puts cd.to_s
