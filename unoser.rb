@@ -71,6 +71,10 @@ class Server
 		# go back to main stream
 	end
 
+	def get_player_num
+		return @clients.size
+	end
+
 	def clean_up
 		@thpool.each do |th|
 			Thread.kill(th)
@@ -106,6 +110,8 @@ class UnoGame_Server
 		@last = Card.new("5F")
 		@hand = Array.new
 		@server = Server.new(players)
+		@players = @server.get_player_num
+		puts "Player Num: #{@players}"
 		@players.times do 
 			@hand.push(Hand.new)
 		end
@@ -126,6 +132,7 @@ class UnoGame_Server
 		
 		loop do
 			next_one
+			puts "Current turn if #{@cur}"
 			next if @winners.include?@cur
 			wait_for_play
 			if @hand[@cur].empty? then
@@ -159,12 +166,12 @@ class UnoGame_Server
 			inc = 2
 		end
 		if @dir == 1 then
-			@cur+=inc
+			@cur=(@cur+inc) % @players
 			while @winners.include?(@cur) do
 				@cur = (@cur+1) % @players
 			end
 		else
-			@cur-=inc
+			@cur=(@cur-inc) % @players
 			while @winners.include?(@cur) do
 				@cur = (@cur-1) % @players
 			end

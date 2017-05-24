@@ -141,8 +141,10 @@ class Hand
 
 	def play(cd)
 		flag = false
-		@playable.each do |card|
-			if card==cd then
+		card = nil
+		@playable.each do |cur|
+			if cur==cd then
+				card = cur
 				flag = true
 				break
 			end

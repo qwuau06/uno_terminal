@@ -104,8 +104,8 @@ class Client
 	end
 
 	def mainloop
+		draw_session = false
 		loop do
-			draw_session = false
 			sig = -1
 			sig = @recv_que.pop if !@recv_que.empty?
 			#puts "main sig #{sig}"
