@@ -199,7 +199,7 @@ class UnoGame_Server
 	end
 
 	def wait_for_play
-		valid == false
+		valid = false
 		ret = nil
 		while valid == false do
 			ret = @server.get_resp @cur
