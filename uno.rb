@@ -11,6 +11,11 @@ class Card
 		return @color
 	end
 
+	def ==(cd)
+		return true if @color==cd.clr && @num==cd.num
+		return false
+	end
+
 	def num
 		return @num
 	end
