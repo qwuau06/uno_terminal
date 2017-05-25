@@ -75,9 +75,9 @@ class Client
 				#	end
 				when "accum"
 					card = Card.new(@server.gets.chomp)
+					display "You get #{card.to_s}"
 					@mutex.synchronize do
 		#				@cv.wait(@mutex)
-						display "You get #{card.to_s}"
 						@hand.add(card)
 					end
 				else
@@ -123,8 +123,8 @@ class Client
 		#		@cv.signal
 				begin
 					sig = @recv_que.pop(true)
-				rescue ThreadError => e
-					raise e
+				rescue ThreadError
+					next
 				end
 		#	end
 			next if sig==-1
