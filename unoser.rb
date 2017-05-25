@@ -223,11 +223,11 @@ class UnoGame_Server
 			valid = check_card(card)
 		end
 		if card.accum==0 && @accum>0 then
-			@server.com @cur,"msg","Congratulations!"
+			@server.com @cur,"msg","Congratulations! Draw your deal."
 			@accum.times do 
 				draw
 			end
-		else
+		elsif card.accum!=0 then
 			@accum+=card.accum
 		end
 		play(card)
