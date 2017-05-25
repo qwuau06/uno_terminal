@@ -154,7 +154,7 @@ class Client
 					display_msg "You cannot play this card, choose again."
 					ret = play(ask_for_play)
 				end
-				played = true
+				played = true if !ret.eql?"p"
 			end
 		end
 	end
