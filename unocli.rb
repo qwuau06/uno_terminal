@@ -154,7 +154,7 @@ class Client
 					display_msg "You cannot play this card, choose again."
 					ret,cd = play(ask_for_play)
 				end
-				played = true if cd==nil
+				played = true if cd!=nil
 			end
 		end
 	end
