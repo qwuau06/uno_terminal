@@ -76,7 +76,7 @@ class Client
 				when "accum"
 					card = Card.new(@server.gets.chomp)
 					@mutex.synchronize do
-						@cv.wait(@mutex)
+		#				@cv.wait(@mutex)
 						display "You get #{card.to_s}"
 						@hand.add(card)
 					end
@@ -119,10 +119,14 @@ class Client
 		#played = false
 		loop do
 			sig = -1
-			@mutex.synchronize do
-				@cv.signal
-				sig = @recv_que.pop if !@recv_que.empty?
-			end
+		#	@mutex.synchronize do
+		#		@cv.signal
+				begin
+					sig = @recv_que.pop(true)
+				rescue ThreadError => e
+					raise e
+				end
+		#	end
 			next if sig==-1
 			case sig
 			when 1
