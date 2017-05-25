@@ -72,6 +72,12 @@ class Client
 				#	@mutex.synchronize do
 						@check_que << @server.gets.chomp.to_i
 				#	end
+				when "accum"
+					card = Card.new(@server.gets.chomp)
+					@mutex.synchronize do
+						display "You get #{card.to_s}"
+						@hand.add(card)
+					end
 				else
 				end
 			end
@@ -108,7 +114,7 @@ class Client
 
 	def mainloop
 		play_session = false
-		played = false
+		#played = false
 		loop do
 			sig = -1
 			@mutex.synchronize do
@@ -123,7 +129,7 @@ class Client
 			#	end
 				@hand.add(card)
 				display "You draw #{card.to_s}"
-				if played && play_session then
+				if play_session then
 					next
 				end
 			when 2
@@ -154,7 +160,7 @@ class Client
 					display_msg "You cannot play this card, choose again."
 					ret,cd = play(ask_for_play)
 				end
-				played = true if cd!=nil
+				#played = true if cd!=nil
 			end
 		end
 	end

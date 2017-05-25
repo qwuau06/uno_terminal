@@ -189,6 +189,15 @@ class UnoGame_Server
 		@server.com player,"draw",card.to_s
 	end
 
+	def accum_send(player=@cur)
+		if @deck.empty? then
+			@deck.reshuffle
+		end
+		card = @deck.draw
+		@hand[player].add(card)
+		@server.com player,"accum",card.to_s
+	end
+
 	def check_card(player=@cur,card)
 		if !@hand[player].has? card then 
 			@server.com player,"check","0"
@@ -239,7 +248,7 @@ class UnoGame_Server
 	def accum_cal
 		@server.com @cur,"msg","Congratulations! Draw your deal."
 		@accum.times do 
-			draw
+			accum_send
 		end
 		@accum = 0
 	end
