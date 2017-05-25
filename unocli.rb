@@ -160,7 +160,7 @@ class Client
 				@order = @recv_que.pop
 				display_msg "Your order is #{@order}"
 			when 5
-				display_mg "Choose a color:"
+				display_msg "Choose a color:"
 				ask_for_color
 			end
 			if play_session == true then
@@ -172,7 +172,7 @@ class Client
 					display_msg "You cannot play this card, choose again."
 					ret,cd = play(ask_for_play)
 				end
-				if (cd.num==13)||(cd.num==14) then
+				if (cd!=nil)&&((cd.num==13)||(cd.num==14)) then
 					play_session = false
 				end
 				#played = true if cd!=nil
