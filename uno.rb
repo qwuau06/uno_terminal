@@ -1,6 +1,6 @@
 class Card
-	POOL = ['0','1','2','3','4','5','6','7','8','9','B','S','D','CC','PF',"N/A"]
-	COLOR = ['R','G','B','Y','B','N/A']
+	POOL = ['0','1','2','3','4','5','6','7','8','9','Backwards','Skip','Plus2','WildCard','Plus4',"N/A"]
+	COLOR = ['Red','Green','Blue','Yellow','Black','N/A']
 
 	def initialize(str)
 		@color = str[0].to_i
@@ -23,10 +23,18 @@ class Card
 
 	def fakeclr(clr)
 		@color = clr
+		@num = 15
 	end
 
 	def to_s
 		return @color.to_s + @num.to_s(16)
+	end
+
+	def to_readable
+		return "Empty" if (@num==15)&&(@color==5)
+		return COLOR[@color]+"-"+POOL[@num] if (@color<4)&&(@num<13)
+		return POOL[@num] if @color==4
+		return COLOR[@color] if @num==15
 	end
 
 	def accum
