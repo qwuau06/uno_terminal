@@ -115,6 +115,7 @@ class UnoGame_Server
 			@hand.push(Hand.new)
 		end
 		@winners = Array.new
+		@accum = 0
 	end
 
 	def game
@@ -220,6 +221,14 @@ class UnoGame_Server
 			end
 			card = Card.new(ret)
 			valid = check_card(card)
+		end
+		if card.accum==0 then
+			@server.com @cur,"msg","Congratulations!"
+			@accum.times do 
+				draw
+			end
+		else
+			@accum+=card.accum
 		end
 		play(card)
 	end

@@ -25,6 +25,12 @@ class Card
 		return @color.to_s + @num.to_s(16)
 	end
 
+	def accum
+		return 2 if @num==12
+		return 4 if @num==14
+		return 0
+	end
+
 	def playable? cd
 		return true if cd.num==15 && cd.clr == 5
 		return true if @num==14

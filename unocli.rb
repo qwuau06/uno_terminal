@@ -101,6 +101,9 @@ class Client
 
 	def win
 		#dummy
+		@mutex.synchronize do
+			puts "You win."
+		end
 	end
 
 	def mainloop
@@ -138,6 +141,7 @@ class Client
 			end
 			if draw_session == true then
 				@hand.mark_playable(@last)
+				display_msg "Remaining Cards: #{@hand.to_s}"
 				display_msg "Your playable cards are: #{@hand.show_playable}"
 				ret = play(ask_for_play)
 				while !ret do
