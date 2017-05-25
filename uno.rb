@@ -21,6 +21,10 @@ class Card
 		return @num
 	end
 
+	def fakeclr(clr)
+		@color = clr
+	end
+
 	def to_s
 		return @color.to_s + @num.to_s(16)
 	end
