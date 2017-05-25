@@ -110,7 +110,6 @@ class UnoGame_Server
 		@hand = Array.new
 		@server = Server.new(players)
 		@players = @server.get_player_num
-		puts "Player Num: #{@players}"
 		@players.times do 
 			@hand.push(Hand.new)
 		end
@@ -133,17 +132,26 @@ class UnoGame_Server
 		loop do
 			next_one
 			puts "Current turn if #{@cur}"
-			next if @winners.include?@cur
 			wait_for_play
 			if @hand[@cur].empty? then
 				win
-				if @winners.size == @Players.size then
+				if @winners.size == @players-1 then
 					game_in_play = false
 					break
 				end
 			end
-			break if game_in_play == false
+			break if !game_in_play
 		end
+		loser = -1
+		@players.times do |pl|
+			if @winners.include?pl then
+				next
+			end
+			loser = pl
+			break
+		end
+		@server.broadcast "msg","Game Over. Player #{loser.to_i} lose the game."
+		@server.cleanup
 	end
 
 	def infos
