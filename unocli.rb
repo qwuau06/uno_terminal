@@ -129,9 +129,9 @@ class Client
 			#	end
 				@hand.add(card)
 				display "You draw #{card.to_s}"
-				if play_session then
-					next
-				end
+			#	if play_session then
+			#		next
+			#	end
 			when 2
 			#	@mutex.synchronize do
 					@last = @recv_que.pop
@@ -140,10 +140,10 @@ class Client
 				if @cur==@order then
 					display_msg "Your turn."
 					play_session = true
-					played = false
+			#		played = false
 				else
 					play_session = false
-					played = false
+			#		played = false
 				end
 			when 3
 				win
