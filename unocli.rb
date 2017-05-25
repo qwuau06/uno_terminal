@@ -149,12 +149,12 @@ class Client
 				@hand.mark_playable(@last)
 				display_msg "Remaining Cards: #{@hand.to_s}"
 				display_msg "Your playable cards are: #{@hand.show_playable}"
-				ret = play(ask_for_play)
+				ret,cd = play(ask_for_play)
 				while !ret do
 					display_msg "You cannot play this card, choose again."
-					ret = play(ask_for_play)
+					ret,cd = play(ask_for_play)
 				end
-				played = true if !ret.eql?"p"
+				played = true if cd==nil
 			end
 		end
 	end
@@ -176,7 +176,7 @@ class Client
 			ret = @check_que.pop
 			if ret == 1 then
 				@hand.play(cd)
-				return true
+				return true,cd
 			else
 				return false
 			end
