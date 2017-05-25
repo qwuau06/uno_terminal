@@ -222,7 +222,7 @@ class UnoGame_Server
 			card = Card.new(ret)
 			valid = check_card(card)
 		end
-		if card.accum==0 then
+		if card.accum==0 && @accum>0 then
 			@server.com @cur,"msg","Congratulations!"
 			@accum.times do 
 				draw
