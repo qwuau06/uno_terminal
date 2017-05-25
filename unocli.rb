@@ -17,6 +17,7 @@ class Client
 		@dir = 1
 		@cur = -1
 		@last = "5F"
+		@cv = ConditionalVariable.new
 	end
 
 	def game(ip, port=8915)
@@ -77,6 +78,7 @@ class Client
 					@mutex.synchronize do
 						display "You get #{card.to_s}"
 						@hand.add(card)
+						@cv.signal
 					end
 				else
 				end
@@ -118,6 +120,7 @@ class Client
 		loop do
 			sig = -1
 			@mutex.synchronize do
+				@cv.wait(@mutex)
 				sig = @recv_que.pop if !@recv_que.empty?
 			end
 			next if sig==-1
