@@ -213,9 +213,16 @@ class UnoGame_Server
 	end
 
 	def play(player=@cur,card)
-		@last = card
 		@hand[player].play(card)
 		@deck.discard(card)
+		if (card.num == 13)||(card.num == 14) then
+			puts "wait for color"
+			@server.com @cur,"inquiry"
+			ret = @server.get_resp @cur
+			card.fakeclr(ret.to_i)
+			puts "color is #{ret.to_i}"
+		end
+		@last = card
 	end
 
 	def wait_for_play
