@@ -189,7 +189,7 @@ class UnoGame_Server
 	end
 
 	def check_card(player=@cur,card)
-		if @hand[player].has?card == false then 
+		if !@hand[player].has? card then 
 			@server.com player,"check","0"
 			return false
 		end

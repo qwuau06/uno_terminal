@@ -110,8 +110,11 @@ class Hand
 	end
 
 	def has?(cd)
+		return false if !cd.instance_of?Card
 		@hand.each do |cur|
-			if cur==cd then return true end
+			if cur==cd then 
+				return true
+			end
 		end
 		return false
 	end

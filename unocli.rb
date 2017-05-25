@@ -69,9 +69,9 @@ class Client
 					@all_hands = Array.new @server.gets.chomp.to_i # num of players
 					setup_display
 				when "check"
-					#@mutex.synchronize do
+				#	@mutex.synchronize do
 						@check_que << @server.gets.chomp.to_i
-					#end
+				#	end
 				else
 				end
 			end
@@ -107,8 +107,10 @@ class Client
 		draw_session = false
 		loop do
 			sig = -1
-			sig = @recv_que.pop if !@recv_que.empty?
-			#puts "main sig #{sig}"
+			@mutex.synchronize do
+				sig = @recv_que.pop if !@recv_que.empty?
+			end
+			next if sig==-1
 			case sig
 			when 1
 				card = nil
