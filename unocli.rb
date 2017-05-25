@@ -107,7 +107,8 @@ class Client
 	end
 
 	def mainloop
-		draw_session = false
+		play_session = false
+		played = false
 		loop do
 			sig = -1
 			@mutex.synchronize do
@@ -122,6 +123,9 @@ class Client
 			#	end
 				@hand.add(card)
 				display "You draw #{card.to_s}"
+				if played && play_session then
+					next
+				end
 			when 2
 			#	@mutex.synchronize do
 					@last = @recv_que.pop
@@ -129,9 +133,11 @@ class Client
 				display "Last played was #{@last.to_s}"
 				if @cur==@order then
 					display_msg "Your turn."
-					draw_session = true
+					play_session = true
+					played = false
 				else
-					draw_session = false
+					play_session = false
+					played = false
 				end
 			when 3
 				win
@@ -139,7 +145,7 @@ class Client
 				@order = @recv_que.pop
 				display_msg "Your order is #{@order}"
 			end
-			if draw_session == true then
+			if play_session == true then
 				@hand.mark_playable(@last)
 				display_msg "Remaining Cards: #{@hand.to_s}"
 				display_msg "Your playable cards are: #{@hand.show_playable}"
@@ -148,6 +154,7 @@ class Client
 					display_msg "You cannot play this card, choose again."
 					ret = play(ask_for_play)
 				end
+				played = true
 			end
 		end
 	end

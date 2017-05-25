@@ -213,8 +213,13 @@ class UnoGame_Server
 		valid = false
 		ret = "p"
 		card = nil
+		accumflag = false
 		while valid == false do
 			ret = @server.get_resp @cur
+			if (!accumflag) && (ret.eql?"p") && (@accum>0) then
+				accum_cal
+				accumflag = true
+			end
 			while ret.eql?"p" do
 				draw
 				ret = @server.get_resp @cur
@@ -222,15 +227,21 @@ class UnoGame_Server
 			card = Card.new(ret)
 			valid = check_card(card)
 		end
-		if card.accum==0 && @accum>0 then
-			@server.com @cur,"msg","Congratulations! Draw your deal."
-			@accum.times do 
-				draw
-			end
-		elsif card.accum!=0 then
+		if (card.accum==0) && (@accum>0) && (!accumflag) then
+			accum_cal
+			accumflag = true
+		elsif (card.accum >0) && (!accumflag) then
 			@accum+=card.accum
 		end
 		play(card)
+	end
+
+	def accum_cal
+		@server.com @cur,"msg","Congratulations! Draw your deal."
+		@accum.times do 
+			draw
+		end
+		@accum = 0
 	end
 
 	def win(player=@cur)
