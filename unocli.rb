@@ -165,7 +165,7 @@ class Client
 			end
 			if play_session == true then
 				@hand.mark_playable(@last)
-				display_msg "Remaining Cards: #{@hand.to_readable}"
+				display_msg "Remaining Cards: #{@hand.to_s}"
 				display_msg "Your playable cards are: #{@hand.show_playable}"
 				ret,cd = play(ask_for_play)
 				while !ret do
