@@ -75,7 +75,7 @@ class Client
 				#	end
 				when "accum"
 					card = Card.new(@server.gets.chomp)
-					display "You get #{card.to_s}"
+					display "You get #{card.to_readable}"
 					@mutex.synchronize do
 		#				@cv.wait(@mutex)
 						@hand.add(card)
@@ -137,7 +137,7 @@ class Client
 					card = @recv_que.pop
 			#	end
 				@hand.add(card)
-				display "You draw #{card.to_s}"
+				display "You draw #{card.to_readable}"
 			#	if play_session then
 			#		next
 			#	end
@@ -145,7 +145,7 @@ class Client
 			#	@mutex.synchronize do
 					@last = @recv_que.pop
 			#	end
-				display "Last played was #{@last.to_s}"
+				display "Last played was #{@last.to_readable}"
 				if @cur==@order then
 					display_msg "Your turn."
 					play_session = true
