@@ -31,10 +31,15 @@ class Card
 	end
 
 	def to_readable
-		str = "Empty" if (@num==15)&&(@color==5)
-		str =  COLOR[@color]+"-"+POOL[@num] if (@color<4)&&(@num<13)
-		str =  POOL[@num] if @color==4
-		str =  COLOR[@color] if @num==15
+		if (@num==15)&&(@color==5) then
+			str = "Empty" 
+		elsif (@color<4)&&(@num<13) then
+			str =  COLOR[@color]+"-"+POOL[@num]
+		elsif (@color==4) then
+			str =  POOL[@num]
+		elsif (@num==15) then
+			str =  COLOR[@color]
+		end
 		return str+"("+to_s+")"
 	end
 
