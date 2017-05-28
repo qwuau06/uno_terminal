@@ -31,10 +31,11 @@ class Card
 	end
 
 	def to_readable
-		return "Empty" if (@num==15)&&(@color==5)
-		return COLOR[@color]+"-"+POOL[@num] if (@color<4)&&(@num<13)
-		return POOL[@num] if @color==4
-		return COLOR[@color] if @num==15
+		str = "Empty" if (@num==15)&&(@color==5)
+		str =  COLOR[@color]+"-"+POOL[@num] if (@color<4)&&(@num<13)
+		str =  POOL[@num] if @color==4
+		str =  COLOR[@color] if @num==15
+		return str+"("+to_s+")"
 	end
 
 	def accum
