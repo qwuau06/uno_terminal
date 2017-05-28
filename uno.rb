@@ -119,11 +119,14 @@ class Hand
 		@df = Array.new [0,0,0,0,0,0]
 	end
 
-	def any_to_s(tar)
+	def any_to_s(tar,readable=false)
 		str = ""
 		tar.each do |card|
 			str += card.to_s + ","
-		end
+		end if !readable
+		tar.each do |card|
+			str += card.to_readable + ","
+		end if readable
 		return str[0..-2]
 	end
 
@@ -138,11 +141,15 @@ class Hand
 	end
 
 	def to_s
-		return any_to_s(@hand)
+		return any_to_s(@hand,false)
+	end
+
+	def to_readable
+		return any_to_s(@hand,true)
 	end
 
 	def show_playable
-		return any_to_s(@playable)
+		return any_to_s(@playable,true)
 	end
 
 	def add(cd)
